@@ -2,10 +2,11 @@
 
 Génère chaque matin un court texte en français, à écouter à voix haute (~2 min) :
 un mot sympa du jour, la météo à Stockholm (Open-Meteo) et les principaux titres
-de franceinfo (RSS). Le texte est rédigé par une IA (Gemini, offre gratuite) et
-publié dans un flux RSS par GitHub Actions.
+de franceinfo (RSS). Le texte est rédigé par une IA (Gemini, offre gratuite),
+lu par une voix de synthèse (Vivienne, voix Microsoft Edge via edge-tts) et
+publié chaque nuit comme épisode de podcast par GitHub Actions.
 
-Flux : https://timr77.github.io/briefing-matinal/feed.xml
+Flux podcast : https://timr77.github.io/briefing-matinal/feed.xml
 
 ## Lancer en local
 
@@ -20,19 +21,22 @@ python main.py
 ```
 
 Le texte s'affiche dans le terminal et est enregistré dans `briefing.txt`.
-`python main.py --rss` met aussi à jour le flux dans `docs/` (c'est ce que fait
-GitHub Actions ; inutile en local).
+`python main.py --rss` produit aussi le MP3 et met à jour le flux dans `docs/`
+(c'est ce que fait GitHub Actions ; inutile en local).
 
 **Robustesse :**
 - Si une source échoue (réseau, flux indisponible…), le briefing est produit
   sans cette section.
 - Sans clé API, ou si l'appel à l'IA échoue (quota gratuit épuisé…), le texte
-  est rédigé par le gabarit sans IA. Un avertissement s'affiche dans les deux cas.
+  est rédigé par le gabarit sans IA.
+- Si la voix de synthèse échoue, le briefing est publié dans le flux sans audio.
+
+Un avertissement s'affiche dans chacun de ces cas.
 
 ## Personnaliser
 
 - `config.toml` : ville, flux RSS, nombre de titres, rédacteur (`gemini`,
-  `claude` ou `gabarit`) et modèle, etc.
+  `claude` ou `gabarit`) et modèle, voix et vitesse de lecture, etc.
 - `phrases.txt` : une phrase par ligne (lignes vides ou commençant par `#` ignorées).
 - `briefing/redaction/consignes.py` : les instructions de rédaction données à l'IA.
 
@@ -50,8 +54,9 @@ Déjà en place pour ce dépôt. Pour le refaire ailleurs :
    dossier `/docs`.
 
 Le workflow tourne ensuite chaque jour à 04:00 UTC, soit 5 h à Stockholm en
-hiver et 6 h en été. Il committe `docs/feed.xml` et `docs/briefings.json`
-(historique des 30 derniers briefings).
+hiver et 6 h en été. Il committe `docs/feed.xml`, `docs/briefings.json`
+(historique des 30 derniers briefings) et `docs/audio/` (les 7 derniers MP3,
+environ 650 Ko chacun).
 
 ## Architecture
 
@@ -69,6 +74,7 @@ briefing/
     gabarit.py              phrases fixes, sans IA (repli)
   publication/              publier(texte, donnees, config)
     fichier.py              briefing.txt
+    audio.py                docs/audio/briefing-AAAA-MM-JJ.mp3 (edge-tts)
     rss.py                  docs/feed.xml + docs/briefings.json
 .github/workflows/briefing.yml
 ```

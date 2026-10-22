@@ -2,7 +2,9 @@
 
 Le dossier de publication contient :
   - briefings.json : l'historique des derniers briefings (source de vérité) ;
+  - audio/         : les MP3 récents, produits par publication/audio.py ;
   - feed.xml       : le flux RSS 2.0, régénéré entièrement à chaque exécution.
+Un briefing dont le MP3 existe devient un épisode de podcast (<enclosure>).
 """
 
 import json
@@ -16,6 +18,7 @@ from zoneinfo import ZoneInfo
 from briefing.config import chemin_projet
 from briefing.dates import date_en_toutes_lettres
 from briefing.modeles import DonneesBriefing
+from briefing.publication.audio import chemin_audio
 
 
 def _charger_archive(chemin: Path) -> list[dict]:
@@ -29,7 +32,8 @@ def _en_html(texte: str) -> str:
     return "".join(f"<p>{escape(ligne, quote=False)}</p>" for ligne in lignes if ligne)
 
 
-def _construire_flux(archive: list[dict], conf: dict) -> ET.ElementTree:
+def _construire_flux(archive: list[dict], config: dict) -> ET.ElementTree:
+    conf = config["rss"]
     rss = ET.Element("rss", version="2.0")
     canal = ET.SubElement(rss, "channel")
     ET.SubElement(canal, "title").text = conf["titre"]
@@ -51,6 +55,10 @@ def _construire_flux(archive: list[dict], conf: dict) -> ET.ElementTree:
             datetime.fromisoformat(entree["publie_le"])
         )
         ET.SubElement(item, "description").text = _en_html(entree["texte"])
+        audio = chemin_audio(jour, config)
+        if audio.exists():
+            ET.SubElement(item, "enclosure", url=f"{conf['url_site']}audio/{audio.name}",
+                          length=str(audio.stat().st_size), type="audio/mpeg")
 
     ET.indent(rss)
     return ET.ElementTree(rss)
@@ -72,5 +80,5 @@ def publier(texte: str, donnees: DonneesBriefing, config: dict) -> Path:
 
     chemin_archive.write_text(json.dumps(archive, ensure_ascii=False, indent=2), encoding="utf-8")
     chemin_flux = dossier / "feed.xml"
-    _construire_flux(archive, conf).write(chemin_flux, encoding="utf-8", xml_declaration=True)
+    _construire_flux(archive, config).write(chemin_flux, encoding="utf-8", xml_declaration=True)
     return chemin_flux

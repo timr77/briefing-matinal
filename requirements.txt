@@ -1,3 +1,4 @@
 anthropic>=2.1
+edge-tts>=7.3
 requests>=2.31
 tzdata  # base des fuseaux horaires pour zoneinfo (absente sous Windows)

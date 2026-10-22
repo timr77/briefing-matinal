@@ -8,7 +8,7 @@ from zoneinfo import ZoneInfo
 
 from briefing.config import RACINE, charger_config
 from briefing.modeles import DonneesBriefing
-from briefing.publication import fichier, rss
+from briefing.publication import audio, fichier, rss
 from briefing.redaction import claude, gabarit, gemini
 from briefing.sources import actualites, meteo, phrase_du_jour
 
@@ -54,7 +54,7 @@ def rediger(donnees: DonneesBriefing, config: dict) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Génère le briefing matinal.")
     parser.add_argument("--rss", action="store_true",
-                        help="ajoute aussi le briefing au flux RSS (utilisé par GitHub Actions)")
+                        help="produit aussi le MP3 et met à jour le flux podcast (utilisé par GitHub Actions)")
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
@@ -66,10 +66,14 @@ def main() -> None:
     texte = rediger(donnees, config)
     print(texte)
 
-    publications = [fichier] + ([rss] if args.rss else [])
+    # L'audio passe avant le flux, qui n'ajoute le MP3 que s'il existe.
+    publications = [fichier] + ([audio, rss] if args.rss else [])
     for module in publications:
-        chemin = module.publier(texte, donnees, config)
-        log.info("Publié : %s", chemin.relative_to(RACINE).as_posix())
+        try:
+            chemin = module.publier(texte, donnees, config)
+            log.info("Publié : %s", chemin.relative_to(RACINE).as_posix())
+        except Exception as erreur:  # ex. voix indisponible : le flux texte part quand même
+            log.warning("publication « %s » en échec : %s", module.__name__.rsplit(".", 1)[-1], erreur)
 
 
 if __name__ == "__main__":

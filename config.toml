@@ -34,6 +34,13 @@ effort = "medium"  # low | medium | high : profondeur de réflexion du modèle
 [sortie]
 fichier = "briefing.txt"
 
+[audio]
+# Voix française : fr-FR-VivienneMultilingualNeural, fr-FR-RemyMultilingualNeural,
+# fr-FR-DeniseNeural, fr-FR-HenriNeural, fr-FR-EloiseNeural
+voix = "fr-FR-VivienneMultilingualNeural"
+vitesse = "+0%"  # ex. "-10%" pour ralentir, "+10%" pour accélérer
+nombre_fichiers = 7  # MP3 conservés en ligne
+
 [rss]
 dossier = "docs"  # servi tel quel par GitHub Pages
 # À adapter : https://<pseudo-github>.github.io/<nom-du-depot>/
