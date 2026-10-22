@@ -24,7 +24,8 @@ fichier = "phrases.txt"
 moteur = "gemini"
 
 [redaction.gemini]
-modele = "gemini-3.8-flash"
+# Essayés dans l'ordre ; le second sert de secours si le premier est saturé.
+modeles = ["gemini-3.8-flash", "gemini-3.5-flash-lite"]
 
 [redaction.claude]
 modele = "claude-opus-5-5"
