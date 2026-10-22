@@ -17,10 +17,16 @@ avec_resume = true
 fichier = "phrases.txt"
 
 [redaction]
-# "claude" : rédaction par l'API Claude (clé dans ANTHROPIC_API_KEY),
-#            avec repli automatique sur le gabarit en cas d'échec.
-# "gabarit" : phrases fixes, sans IA.
-moteur = "claude"
+# "gemini"  : API Gemini de Google, offre gratuite (clé dans GEMINI_API_KEY)
+# "claude"  : API Claude, payante (clé dans ANTHROPIC_API_KEY)
+# "gabarit" : phrases fixes, sans IA
+# Si le rédacteur IA échoue, le gabarit prend automatiquement le relais.
+moteur = "gemini"
+
+[redaction.gemini]
+modele = "gemini-3.8-flash"
+
+[redaction.claude]
 modele = "claude-opus-5-5"
 effort = "medium"  # low | medium | high : profondeur de réflexion du modèle
 

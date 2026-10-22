@@ -9,7 +9,7 @@ from zoneinfo import ZoneInfo
 from briefing.config import RACINE, charger_config
 from briefing.modeles import DonneesBriefing
 from briefing.publication import fichier, rss
-from briefing.redaction import claude, gabarit
+from briefing.redaction import claude, gabarit, gemini
 from briefing.sources import actualites, meteo, phrase_du_jour
 
 # Champ de DonneesBriefing -> fonction de collecte.
@@ -21,6 +21,7 @@ SOURCES = {
 
 REDACTEURS = {
     "gabarit": gabarit.rediger,
+    "gemini": gemini.rediger,
     "claude": claude.rediger,
 }
 
