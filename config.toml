@@ -1,0 +1,39 @@
+# Configuration du briefing matinal.
+# Les chemins de fichiers sont relatifs au dossier du projet.
+
+[ville]
+nom = "Stockholm"
+latitude = 59.3293
+longitude = 18.0686
+fuseau = "Europe/Stockholm"
+
+[actualites]
+flux_rss = "https://www.franceinfo.fr/titres.rss"
+nombre_titres = 5
+# Lire aussi le chapeau de chaque article (allonge le briefing vers ~2 min).
+avec_resume = true
+
+[phrases]
+fichier = "phrases.txt"
+
+[redaction]
+# "claude" : rédaction par l'API Claude (clé dans ANTHROPIC_API_KEY),
+#            avec repli automatique sur le gabarit en cas d'échec.
+# "gabarit" : phrases fixes, sans IA.
+moteur = "claude"
+modele = "claude-opus-5-5"
+effort = "medium"  # low | medium | high : profondeur de réflexion du modèle
+
+[sortie]
+fichier = "briefing.txt"
+
+[rss]
+dossier = "docs"  # servi tel quel par GitHub Pages
+# À adapter : https://<pseudo-github>.github.io/<nom-du-depot>/
+url_site = "https://timr77.github.io/briefing-matinal/"
+titre = "Briefing matinal"
+description = "Le mot du jour, la météo à Stockholm et les titres de franceinfo."
+nombre_briefings = 30  # entrées conservées dans le flux
+
+[reseau]
+timeout = 10  # secondes
