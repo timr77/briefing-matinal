@@ -30,7 +30,7 @@ def _appeler(modele: str, cle: str, donnees: DonneesBriefing) -> requests.Respon
                 "systemInstruction": {"parts": [{"text": CONSIGNES}]},
                 "contents": [{"role": "user", "parts": [{"text": message_utilisateur(donnees)}]}],
             },
-            timeout=120,
+            timeout=60,  # une réponse normale prend moins de 20 s
         )
         if reponse.status_code not in ERREURS_TEMPORAIRES or tentative == TENTATIVES:
             return reponse

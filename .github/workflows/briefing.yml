@@ -16,7 +16,8 @@ concurrency:
 jobs:
   briefing:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # Pire cas : Gemini saturé (~8 min de tentatives) + voix (~2 min) + installation.
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v5
 
