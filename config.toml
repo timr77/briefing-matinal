@@ -8,8 +8,20 @@ longitude = 18.0686
 fuseau = "Europe/Stockholm"
 
 [actualites]
-flux_rss = "https://www.franceinfo.fr/titres.rss"
-nombre_titres = 5
+# Flux lus pour constituer la liste de nouvelles candidates.
+flux_rss = [
+    "https://www.franceinfo.fr/titres.rss",
+    "https://www.franceinfo.fr/sciences.rss",
+    "https://www.franceinfo.fr/culture.rss",
+    "https://www.franceinfo.fr/sports.rss",
+    "https://www.franceinfo.fr/decouverte.rss",
+    "https://www.franceinfo.fr/environnement.rss",
+]
+titres_par_flux = 8  # titres les plus récents lus dans chaque flux
+nombre_titres = 5    # nouvelles retenues au maximum dans le briefing
+# true : l'IA ne garde que les nouvelles encourageantes. Sans IA (gabarit),
+# l'actualité est alors omise, faute de pouvoir juger le ton des nouvelles.
+nouvelles_positives_uniquement = true
 # Lire aussi le chapeau de chaque article (allonge le briefing vers ~2 min).
 avec_resume = true
 

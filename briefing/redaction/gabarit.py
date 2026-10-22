@@ -61,7 +61,10 @@ def rediger(donnees: DonneesBriefing, config: dict) -> str:
         sections.append(f"Pour bien démarrer, le mot du jour : {_avec_point(donnees.phrase)}")
     if donnees.meteo:
         sections.append(_section_meteo(donnees.meteo))
-    if donnees.titres:
-        sections.append(_section_actualites(donnees.titres, config["actualites"]["avec_resume"]))
+    conf = config["actualites"]
+    # Le gabarit ne sait pas juger si une nouvelle est positive : dans ce mode, il s'abstient.
+    if donnees.titres and not conf["nouvelles_positives_uniquement"]:
+        titres = donnees.titres[: conf["nombre_titres"]]
+        sections.append(_section_actualites(titres, conf["avec_resume"]))
     sections.append("C'est tout pour ce matin. Belle journée !")
     return "\n\n".join(sections) + "\n"

@@ -6,7 +6,7 @@ La clé est lue dans la variable d'environnement ANTHROPIC_API_KEY.
 import anthropic
 
 from briefing.modeles import DonneesBriefing
-from briefing.redaction.consignes import CONSIGNES, message_utilisateur
+from briefing.redaction.consignes import consignes, message_utilisateur
 
 
 def rediger(donnees: DonneesBriefing, config: dict) -> str:
@@ -15,7 +15,7 @@ def rediger(donnees: DonneesBriefing, config: dict) -> str:
     reponse = client.beta.messages.create(
         model=conf["modele"],
         max_tokens=16000,
-        system=CONSIGNES,
+        system=consignes(config),
         output_config={"effort": conf["effort"]},
         # Si les filtres de sécurité refusent la requête, l'API la rejoue
         # automatiquement sur un modèle de repli.

@@ -10,7 +10,7 @@ import time
 import requests
 
 from briefing.modeles import DonneesBriefing
-from briefing.redaction.consignes import CONSIGNES, message_utilisateur
+from briefing.redaction.consignes import consignes, message_utilisateur
 
 URL = "https://generativelanguage.googleapis.com/v1beta/models/{modele}:generateContent"
 ERREURS_TEMPORAIRES = {429, 500, 503}  # quota par minute, surcharge du service
@@ -20,14 +20,14 @@ PAUSE = 20  # secondes, multipliée à chaque nouvelle tentative
 log = logging.getLogger("briefing")
 
 
-def _appeler(modele: str, cle: str, donnees: DonneesBriefing) -> requests.Response:
+def _appeler(modele: str, cle: str, donnees: DonneesBriefing, config: dict) -> requests.Response:
     """Appelle un modèle, en réessayant si le service est momentanément indisponible."""
     for tentative in range(1, TENTATIVES + 1):
         reponse = requests.post(
             URL.format(modele=modele),
             headers={"x-goog-api-key": cle},  # en en-tête : la clé n'apparaît pas dans les logs
             json={
-                "systemInstruction": {"parts": [{"text": CONSIGNES}]},
+                "systemInstruction": {"parts": [{"text": consignes(config)}]},
                 "contents": [{"role": "user", "parts": [{"text": message_utilisateur(donnees)}]}],
             },
             timeout=60,  # une réponse normale prend moins de 20 s
@@ -71,7 +71,7 @@ def rediger(donnees: DonneesBriefing, config: dict) -> str:
     erreurs = []
     for modele in config["redaction"]["gemini"]["modeles"]:
         try:
-            texte = _extraire_texte(_appeler(modele, cle, donnees))
+            texte = _extraire_texte(_appeler(modele, cle, donnees, config))
             log.info("Briefing rédigé par %s", modele)
             return texte
         except (RuntimeError, requests.RequestException) as erreur:
