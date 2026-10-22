@@ -7,6 +7,7 @@ lu par une voix de synthèse (Vivienne, voix Microsoft Edge via edge-tts) et
 publié chaque nuit comme épisode de podcast par GitHub Actions.
 
 Flux podcast : https://timr77.github.io/briefing-matinal/feed.xml
+Dernier épisode (adresse fixe) : https://timr77.github.io/briefing-matinal/dernier-briefing.mp3
 
 ## Lancer en local
 
@@ -55,8 +56,9 @@ Déjà en place pour ce dépôt. Pour le refaire ailleurs :
 
 Le workflow tourne ensuite chaque jour à 04:00 UTC, soit 5 h à Stockholm en
 hiver et 6 h en été. Il committe `docs/feed.xml`, `docs/briefings.json`
-(historique des 30 derniers briefings) et `docs/audio/` (les 7 derniers MP3,
-environ 650 Ko chacun).
+(historique des 30 derniers briefings), `docs/audio/` (les 7 derniers MP3,
+environ 650 Ko chacun) et `docs/dernier-briefing.mp3` (copie de l'épisode du
+jour, écrasée chaque nuit).
 
 ## Architecture
 
